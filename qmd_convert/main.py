@@ -15,7 +15,7 @@ def get_cli_arguments():
     cli.add_argument('--extract-media', default=None)
     args = cli.parse_args()
 
-    if not args.format and '.' not in args.output:
+    if (args.format == None) and ('.' not in args.output):
         raise ValueError(
             "The output path must have a .<file type> extension "
             "or --format=<file type> must be provided"
@@ -61,6 +61,15 @@ def clean_up():
                 shutil.rmtree(file.as_posix())
             else:
                 file.unlink()
+
+def qmd_json(filepath, transform_ojs=True, extract_media=Path.cwd()):
+    rendered_json = sh.quarto('render', filepath, to='json', output='-', **{"extract-media": extract_media})
+    read_pandoc = pandoc.read(rendered_json, format='json')
+    if transform_ojs:
+        format_ojs(read_pandoc)
+
+    return read_pandoc
+
                     
 def main():
     
@@ -72,12 +81,9 @@ def main():
     else:
         media = Path(args.extract_media).resolve()
 
+    read_pandoc = qmd_json(filepath=input_, extract_media=media)
 
-    rendered_json = sh.quarto('render', input_, to='json', output='-', **{"extract-media": media})
-    read_pandoc = pandoc.read(rendered_json, format='json')
-    format_ojs(read_pandoc)
-    
-    pandoc.write(read_pandoc, file=output.as_posix())
+    pandoc.write(read_pandoc, file=output.as_posix(), format=args.format)
 
     clean_up()
 
