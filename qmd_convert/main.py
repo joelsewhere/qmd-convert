@@ -12,7 +12,7 @@ def get_cli_arguments():
     cli.add_argument('input')
     cli.add_argument('output')
     cli.add_argument('--format', default=None)
-    cli.add_argument('--extract-media', default=Path.cwd())
+    cli.add_argument('--extract-media', default=None)
     args = cli.parse_args()
 
     if not args.format and '.' not in args.output:
@@ -67,7 +67,10 @@ def main():
     args = get_cli_arguments()
     input_ = Path(args.input).resolve()
     output = Path(args.output).resolve()
-    media = Path(args.extract_media).resolve()
+    if not args.extract_media:
+        media = output.parent
+    else:
+        media = Path(args.extract_media).resolve()
 
 
     rendered_json = sh.quarto('render', input_, to='json', output='-', **{"extract-media": media})
