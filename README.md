@@ -7,6 +7,7 @@ This project creates a cli tool for converting `.qmd` files to a different forma
 The following software projects will need to be installed manually:
 
 **Pandoc:** [Installation Guide](https://pandoc.org/installing.html)
+
 **Quarto:** [Installation Guide](https://quarto.org/docs/get-started/)
 
 ## Install `qmd_convert`
