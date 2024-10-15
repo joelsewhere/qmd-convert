@@ -42,25 +42,7 @@ def format_ojs(read_pandoc):
                         pandoc.types.Format('html'),
                         '<script>' + block[-1] + '</script>'
                         )
-                    
-def clean_up():
-
-    """
-    Providing an `extract-media` argument to `quarto render`
-    places the media in the correct location, but a copy of
-    the media are still being added to the directory for this file
-
-    This function removes any files in this directory 
-    that were not provided with the install.
-    """
-
-    current_files = list(code_dir.iterdir())
-    for file in current_files:
-        if file not in code_files:
-            if file.is_dir():
-                shutil.rmtree(file.as_posix())
-            else:
-                file.unlink()
+                
 
 def qmd_json(filepath, transform_ojs=True, extract_media=Path.cwd()):
     rendered_json = sh.quarto('render', filepath, to='json', output='-', **{"extract-media": extract_media})
@@ -84,8 +66,6 @@ def main():
     read_pandoc = qmd_json(filepath=input_, extract_media=media)
 
     pandoc.write(read_pandoc, file=output.as_posix(), format=args.format)
-
-    clean_up()
 
 if __name__ == '__main__':
     main()

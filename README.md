@@ -2,7 +2,13 @@
 
 This project creates a cli tool for converting `.qmd` files to a different format without the additions quarto defaults to adding when running `quarto render`
 
-There does appear to be a way to drop msot quarto add-on
+There appears to be a way to drop most quarto add-on according to [this discussion](https://github.com/quarto-dev/quarto-cli/discussions/7987), but I'm finding the conversion process in this repository to be more straightforward mostly because it doesn't require adding a bunch of configuration variables mentioned to a `.qmd` file. 
+
+### Conversion process
+1. Use `quarto render` to execute the code of the qmd file, and convert the executed file to `json`. (At time of writing this, converting to json prevents quarto from adding any framework add-ons.)
+1. Parse the json with `pandoc.read`
+1. Iterate recursively over each pandoc block and transform codeblocks containing `"{ojs}"` to an html `<script>`
+1. Convert the json to html using `pandoc.write`
 
 ## Depdendencies
 
